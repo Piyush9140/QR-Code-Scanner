@@ -1,20 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import HomeScreen from './screens/HomeScreen';
+import QRScannerScreen from './screens/QRScannerScreen';
+import QRCodeHistoryScreen from './screens/QRCodeHistoryScreen';
+import { QRCodeProvider } from './QRCodeContext';
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <QRCodeProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="QRScanner" component={QRScannerScreen} />
+          <Stack.Screen name="QRCodeHistory" component={QRCodeHistoryScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </QRCodeProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
