@@ -1,34 +1,37 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
-import { Camera } from 'expo-camera';
-import { QRCodeContext } from '../QRCodeContext'; // Import the QRCodeContext
+import React, { useState, useEffect, useContext } from "react";
+import { View, Text, StyleSheet, Button, Alert } from "react-native";
+import { Camera } from "expo-camera";
+import { QRCodeContext } from "../QRCodeContext";
 
 const QRScannerScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const { addQRCodeToHistory } = useContext(QRCodeContext); // Use the QRCodeContext
+  const { addQRCodeToHistory } = useContext(QRCodeContext);
 
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
+      setHasPermission(status === "granted");
     })();
   }, []);
-
-  const handleBarCodeScanned = async ({ type, data }) => {
-    setScanned(true);
+  const QRscan = async (data) => {
     try {
-      // Add the scanned QR code to history using the context function
       await addQRCodeToHistory(data);
-      // Navigate to the QRCodeHistory screen
-      navigation.navigate('QRCodeHistory', { scannedData: data });
+      navigation.goBack();
     } catch (error) {
-      console.error('Error saving QR code to history:', error);
+      console.error("Error saving QR code to history:", error);
     }
   };
-
-  const handleScanAgain = () => {
-    setScanned(false);
+  const handleBarCodeScanned = async ({ type, data }) => {
+    setScanned(true);
+    Alert.alert("QR Scanned", "Do you want to save data", [
+      {
+        text: "NO",
+        onPress: () => navigation.goBack(),
+        style: "cancel",
+      },
+      { text: "YES", onPress: () => QRscan(data) },
+    ]);
   };
 
   if (hasPermission === null) {
@@ -47,8 +50,6 @@ const QRScannerScreen = ({ navigation }) => {
       >
         <View style={styles.overlay}>
           <Text style={styles.overlayText}>Scan QR Code</Text>
-          <Button title="Cancel" onPress={() => navigation.goBack()} />
-          {scanned && <Button title="Scan Again" onPress={handleScanAgain} />}
         </View>
       </Camera>
     </View>
@@ -64,14 +65,14 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'transparent',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+    backgroundColor: "transparent",
+    justifyContent: "flex-end",
+    alignItems: "center",
     marginBottom: 20,
   },
   overlayText: {
     fontSize: 24,
-    color: 'white',
+    color: "white",
   },
 });
 

@@ -1,10 +1,17 @@
-import React, { useState, useEffect, useLayoutEffect, useContext } from 'react';
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { QRCodeContext } from '../QRCodeContext'; 
+import React, { useState, useEffect, useLayoutEffect, useContext } from "react";
+import {
+  View,
+  Text,
+  Button,
+  FlatList,
+  StyleSheet,
+  Pressable,
+} from "react-native";
+import { QRCodeContext } from "../QRCodeContext";
+import PrimaryButton from "../component/PrimaryButton";
 
 const HomeScreen = ({ navigation }) => {
-  const { history, loadHistory } = useContext(QRCodeContext); 
+  const { history, loadHistory } = useContext(QRCodeContext);
   const [refreshing, setRefreshing] = useState(false);
 
   useLayoutEffect(() => {
@@ -12,11 +19,30 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('QRCodeHistory', { qrCode: item })}>
-      <View style={styles.item}>
-        <Text>{item.content}</Text>
-      </View>
-    </TouchableOpacity>
+    <View style={styles.item}>
+      <Pressable
+        android_ripple={{ color: "#ccc" }}
+        onPress={() => navigation.navigate("History", { qrCode: item })}
+      >
+        <View style={{ padding: 20 }}>
+          <Text>
+            {item.content.length > 20
+              ? `${item.content.substring(0, 18)}... `
+              : item.content}
+          </Text>
+          <Text
+            style={{
+              fontSize: 10,
+              position: "absolute",
+              bottom: 1,
+              marginLeft: 20,
+            }}
+          >
+            Click here for detailed view
+          </Text>
+        </View>
+      </Pressable>
+    </View>
   );
 
   const handleRefresh = async () => {
@@ -26,8 +52,20 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Button title="Scan QR Code" onPress={() => navigation.navigate('QRScanner')} />
+    <View style={[styles.container]}>
+      <PrimaryButton onPress={() => navigation.navigate("QR Scanner")}>
+        Scan QR Code
+      </PrimaryButton>
+      <Text
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          fontWeight: "bold",
+          fontSize: 20,
+        }}
+      >
+        History....
+      </Text>
       <FlatList
         data={history}
         renderItem={renderItem}
@@ -42,15 +80,15 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
     padding: 20,
   },
   item: {
-    backgroundColor: '#f9c2ff',
-    padding: 20,
+    backgroundColor: "#fbd1fe",
     marginVertical: 8,
-    marginHorizontal: 16,
+    borderRadius: 10,
+    elevation: 4,
+    overflow: "hidden",
   },
 });
 

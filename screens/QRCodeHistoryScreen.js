@@ -1,8 +1,10 @@
-import React, { useContext, useEffect } from 'react';
-import { View, Button, FlatList, StyleSheet ,Text} from 'react-native';
-import {QRCodeContext} from '../QRCodeContext'; 
+import React, { useContext, useEffect } from "react";
+import { View, FlatList, StyleSheet, Text } from "react-native";
+import { QRCodeContext } from "../QRCodeContext";
+import PrimaryButton from "../component/PrimaryButton";
 const QRCodeHistoryScreen = () => {
-  const { history, loadHistory, deleteQRCodeFromHistory } = useContext(QRCodeContext); 
+  const { history, loadHistory, deleteQRCodeFromHistory } =
+    useContext(QRCodeContext);
 
   useEffect(() => {
     loadHistory();
@@ -10,8 +12,10 @@ const QRCodeHistoryScreen = () => {
 
   const renderItem = ({ item }) => (
     <View style={styles.item}>
-        <Text>{item.content}</Text>
-      <Button title="Delete" onPress={() => deleteQRCodeFromHistory(item.id)} />
+      <Text>{item.content}</Text>
+      <PrimaryButton onPress={() => deleteQRCodeFromHistory(item.id)}>
+        Delete
+      </PrimaryButton>
     </View>
   );
 
@@ -32,10 +36,12 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   item: {
-    backgroundColor: '#f9c2ff',
+    backgroundColor: "#fbd1fe",
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
+    borderRadius: 15,
+    elevation: 5,
   },
 });
 
